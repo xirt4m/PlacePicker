@@ -1,6 +1,9 @@
 package com.sucho.placepicker
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.location.Address
 import android.location.Geocoder
@@ -227,7 +230,18 @@ class PlacePickerActivity : AppCompatActivity(), OnMapReadyCallback {
     placeNameTextView.text = if (shortAddress.isEmpty()) "Dropped Pin" else shortAddress
     placeAddressTextView.text = fullAddress
     placeCoordinatesTextView.text = Location.convert(latitude, Location.FORMAT_DEGREES) + ", " + Location.convert(longitude, Location.FORMAT_DEGREES)
-    map.isMyLocationEnabled = isMyLocationEnabled
+    map.isMyLocationEnabled = hasLocationPermissionGranted() && isMyLocationEnabled
+  }
+
+  private fun hasLocationPermissionGranted() = checkAnyOfPermissionsGranted(ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION)
+
+  private fun checkAnyOfPermissionsGranted(vararg permissions : String) : Boolean {
+    for (permission in permissions) {
+      if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
+        return true
+      }
+    }
+    return false
   }
 
   private fun getAddressForLocation() {
