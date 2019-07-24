@@ -57,6 +57,7 @@ class PlacePickerActivity : AppCompatActivity(), OnMapReadyCallback {
   private var primaryTextColorRes: Int = -1
   private var secondaryTextColorRes: Int = -1
   private var mapRawResourceStyleRes: Int = -1
+  private var isMyLocationEnabled = false
   private var addresses: List<Address>? = null
   private var mapType: MapType = MapType.NORMAL
   private var onlyCoordinates: Boolean = false
@@ -135,6 +136,7 @@ class PlacePickerActivity : AppCompatActivity(), OnMapReadyCallback {
     mapRawResourceStyleRes = intent.getIntExtra(Constants.MAP_RAW_STYLE_RES_INTENT, -1)
     mapType = intent.getSerializableExtra(Constants.MAP_TYPE_INTENT) as MapType
     onlyCoordinates = intent.getBooleanExtra(Constants.ONLY_COORDINATES_INTENT, false)
+    isMyLocationEnabled = intent.getBooleanExtra(Constants.MY_LOCATION_ENABLED, false)
   }
 
   private fun setIntentCustomization() {
@@ -225,6 +227,7 @@ class PlacePickerActivity : AppCompatActivity(), OnMapReadyCallback {
     placeNameTextView.text = if (shortAddress.isEmpty()) "Dropped Pin" else shortAddress
     placeAddressTextView.text = fullAddress
     placeCoordinatesTextView.text = Location.convert(latitude, Location.FORMAT_DEGREES) + ", " + Location.convert(longitude, Location.FORMAT_DEGREES)
+    map.isMyLocationEnabled = isMyLocationEnabled
   }
 
   private fun getAddressForLocation() {
